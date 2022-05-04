@@ -15,10 +15,10 @@ namespace gpr5300
     public:
         float vertices[12] = {
 
-            1.0f, 0.5f ,0.0f,//top right corner
-        	1.0f, -0.5f, 0.0f,//bottom right corner
-            -1.0f, -0.5f, 0.0f,//bottom left corner
-        	-1.0f, 0.5f, 0.0f // top left corner
+            0.7f, 0.5f ,0.0f,//top right corner
+        	0.7f, -0.5f, 0.0f,//bottom right corner
+            -0.7f, -0.5f, 0.0f,//bottom left corner
+        	-0.7f, 0.5f, 0.0f // top left corner
         };
 
         float colors[12] = {
@@ -43,7 +43,7 @@ namespace gpr5300
         GLuint vao_ = 0;
         GLuint vbo_ [2] = {};
         GLuint ebo_ = 0;
-        float t = 0;
+        float t = 0.0f;
         
     };
 
@@ -63,7 +63,6 @@ namespace gpr5300
         glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
 
-
         //VAO
         glGenVertexArrays(1, &vao_);
         glBindVertexArray(vao_);
@@ -73,8 +72,6 @@ namespace gpr5300
         glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(1);
-       
-
 
     	const auto vertexContent = LoadFile("data/shaders/hello_triangle/MyTriangle.vert");
         const auto* ptr = vertexContent.data();
@@ -114,7 +111,6 @@ namespace gpr5300
             std::cerr << "Error while linking shader program\n";
         }
 
-        
     }
 
     void MyRectangle::End()
@@ -140,7 +136,6 @@ namespace gpr5300
         glBindVertexArray(vao_);
         glDrawElements(GL_TRIANGLES, 6,GL_UNSIGNED_INT, indices);
     }
-
 
 }
 
