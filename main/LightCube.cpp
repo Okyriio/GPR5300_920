@@ -217,7 +217,7 @@ namespace gpr5300
 		void Load(Mesh& mesh)
 		{
 			//Load shaders
-			const auto vertexContent = LoadFile("data/shaders/hello_triangle/Cubes.vert");
+			const auto vertexContent = LoadFile("data/shaders/hello_triangle/LightCube.vert");
 			const auto* ptr = vertexContent.data();
 			vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader_, 1, &ptr, nullptr);
@@ -229,7 +229,7 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading vertex shader\n";
 			}
-			const auto fragmentContent = LoadFile("data/shaders/hello_triangle/Cubes.frag");
+			const auto fragmentContent = LoadFile("data/shaders/hello_triangle/LightCube.frag");
 			ptr = fragmentContent.data();
 			fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader_, 1, &ptr, nullptr);
@@ -266,7 +266,7 @@ namespace gpr5300
 		GLuint fragmentShader_ = 0;
 	};
 
-	class Cube final : public Scene
+	class LightCube final : public Scene
 	{
 	public:
 		void Begin() override;
@@ -279,7 +279,7 @@ namespace gpr5300
 		float t_;
 	};
 
-	void Cube::Begin()
+	void LightCube::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
 		texture_.CreateTexture("data/Textures/fox.jpg");
@@ -287,7 +287,7 @@ namespace gpr5300
 		pipeline_.Load(mesh_);
 	}
 
-	void Cube::End()
+	void LightCube::End()
 	{
 		//Unload program/pipeline
 		mesh_.Delete();
@@ -295,7 +295,7 @@ namespace gpr5300
 		texture_.Delete();
 	}
 
-	void Cube::Update(float dt)
+	void LightCube::Update(float dt)
 	{
 		//Draw program
 		mesh_.Draw(dt);
@@ -306,7 +306,7 @@ namespace gpr5300
 
 int main(int argc, char** argv)
 {
-	gpr5300::Cube scene;
+	gpr5300::LightCube scene;
 	gpr5300::Engine engine(&scene);
 	engine.Run();
 	return EXIT_SUCCESS;

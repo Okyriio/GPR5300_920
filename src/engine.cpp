@@ -49,9 +49,8 @@ namespace gpr5300
                         glm::uvec2 newWindowSize;
                         newWindowSize.x = event.window.data1;
                         newWindowSize.y = event.window.data2;
-                        //Resizes the window
                         glViewport(0, 0, newWindowSize.x, newWindowSize.y);
-                    		break;
+                        break;
                     }
                     default:
                         break;
@@ -64,8 +63,8 @@ namespace gpr5300
                 scene_->OnEvent(event);
                 ImGui_ImplSDL2_ProcessEvent(&event);
             }
-            glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.5f, 0.3f, 0.6f, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             scene_->Update(dt.count());
 
@@ -100,7 +99,7 @@ namespace gpr5300
 
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
         SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-        constexpr auto windowSize = glm::ivec2(1280,720);
+        constexpr auto windowSize = glm::ivec2(1280, 720);
         window_ = SDL_CreateWindow(
             "GPR5300",
             SDL_WINDOWPOS_UNDEFINED,
