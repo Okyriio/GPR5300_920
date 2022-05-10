@@ -10,7 +10,6 @@
 #include "file_utility.h"
 #include "scene.h"
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -50,6 +49,7 @@ namespace gpr5300
 	class Mesh
 	{
 	public:
+		GLuint vbo_[2] = {};
 		void Generate()
 		{
 			// VAO
@@ -65,9 +65,11 @@ namespace gpr5300
 
 			glGenBuffers(1, &vbo_[1]);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(normals_), normals_, GL_STATIC_DRAW);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 			glEnableVertexAttribArray(1);
+
+		
 
 			//EBO
 			glGenBuffers(1, &ebo_);
@@ -90,16 +92,30 @@ namespace gpr5300
 		void Draw(float t)
 		{
 			glUseProgram(program);
-			glUniform1i(glGetUniformLocation(program, "ourTexture"), 0);
-			model_ = rotate(model_, glm::radians(-1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+			const int lightPos = glGetUniformLocation(program, "lightPos");
+			glUniform3f(lightPos, 1.0f, 1.5f, 0.5f);
+			const int objectColor = glGetUniformLocation(program, "objectColor");
+			glUniform3f(objectColor, 0.0f, 0.5f, 1.0f);
+			const int lightColor = glGetUniformLocation(program, "lightColor");
+			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+			
+			model_ = rotate(model_, glm::radians(1.0f), glm::vec3(0.2f, 1.0f, 0.0f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1280 / (float)720, 0.1f, 100.0f);
+			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
+
 			// retrieve the matrix uniform locations
-			unsigned int modelLoc = glGetUniformLocation(program, "model");
-			unsigned int viewLoc = glGetUniformLocation(program, "view");
+			
+			const unsigned int modelLoc = glGetUniformLocation(program, "model");
+			const unsigned int viewLoc = glGetUniformLocation(program, "view");
+			
 			// pass them to the shaders (3 different ways)
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view_[0][0]);
-			glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, &projection_[0][0]);
+		
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model_));
+			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view_[0][0]);
+			
+			
+			glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, &projection_[0][0]);
+
 			glBindVertexArray(vao_);
 			glActiveTexture(GL_TEXTURE0);
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
@@ -143,7 +159,7 @@ namespace gpr5300
 			  -0.5f, -0.5f, -0.5f, //20
 			   0.5f, -0.5f, -0.5f,
 			   0.5f, -0.5f, 0.5f,
-			  -0.5f, -0.5f, 0.5f,
+			  -0.5f, -0.5f, 0.5f
 
 		};
 
@@ -202,14 +218,80 @@ namespace gpr5300
 			1.0f, 1.0f,
 		};
 
+		float normals_[108] = 
+		{0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f,1.0f,
+		 0.0f,  0.0f,1.0f,
+		 0.0f,  0.0f,1.0f,
+		 0.0f,  0.0f,1.0f,
+		 0.0f,  0.0f,1.0f,
+
+		 0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f, 1.0f,
+		 0.0f,  0.0f, 1.0f,
+
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 1.0f,  0.0f,  0.0f,
+		 
+		 0.0f, 1.0f,  0.0f,
+		 0.0f, 1.0f,  0.0f,
+		 0.0f, 1.0f,  0.0f,
+		 0.0f, 1.0f,  0.0f,
+		 0.0f, 1.0f,  0.0f,
+		 0.0f, 1.0f,  0.0f,
+		 
+		 0.0f,  1.0f,  0.0f,
+		 0.0f,  1.0f,  0.0f,
+		 0.0f,  1.0f,  0.0f,
+		 0.0f,  1.0f,  0.0f,
+		 0.0f,  1.0f,  0.0f,
+		 0.0f,  1.0f,  0.0f
+		};
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
-		GLuint vbo_[2] = {};
 
-		glm::mat4 model_ = glm::mat4(1.0f);
-		glm::mat4 view_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
+		glm::mat4 view_ = glm::mat4(1.0f);
+		glm::mat4 model_ = glm::mat4(1.0f);
+	
+		
 	};
+
+	//class Light
+	//{
+	//public:
+	//	void Generate(Mesh mesh)
+	//	{
+	//		glGenVertexArrays(1, &vao_);
+	//		glBindVertexArray(vao_);
+
+	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
+	//		// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+	//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	//		glEnableVertexAttribArray(0);
+	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[1]);
+	//		// normal attribute
+	//		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	//		glEnableVertexAttribArray(1);
+	//	}
+
+	//private:
+	//	GLuint vao_ = 0;
+	//};
 
 	class Pipeline
 	{
@@ -276,13 +358,14 @@ namespace gpr5300
 		Pipeline pipeline_;
 		Texture texture_;
 		Mesh mesh_;
-		float t_;
+		
+		float t_ = 0.0f;
 	};
 
 	void LightCube::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		texture_.CreateTexture("data/Textures/fox.jpg");
+		texture_.CreateTexture("data/textures/fox.jpg");
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}
@@ -298,7 +381,8 @@ namespace gpr5300
 	void LightCube::Update(float dt)
 	{
 		//Draw program
-		mesh_.Draw(dt);
+		t_ += dt;
+		mesh_.Draw(t_);
 	}
 
 

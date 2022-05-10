@@ -205,7 +205,7 @@ namespace gpr5300
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
 		GLuint vbo_[2] = {};
-
+		
 		glm::mat4 model_ = glm::mat4(1.0f);
 		glm::mat4 view_ = glm::mat4(1.0f);
 		glm::mat4 projection_ = glm::mat4(1.0f);
