@@ -3,12 +3,13 @@
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include <windows.h>
 #include "gl/glew.h"
 #include "glm/mat4x4.hpp"
 #include "engine.h"
 #include "file_utility.h"
 #include "scene.h"
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -49,7 +50,7 @@ namespace gpr5300
 	class Mesh
 	{
 	public:
-		GLuint vbo_[2] = {};
+	
 		void Generate()
 		{
 			// VAO
@@ -66,7 +67,7 @@ namespace gpr5300
 			glGenBuffers(1, &vbo_[1]);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo_[1]);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(normals_), normals_, GL_STATIC_DRAW);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
 
 		
@@ -91,36 +92,32 @@ namespace gpr5300
 
 		void Draw(float t)
 		{
-			glUseProgram(program);
-			const int lightPos = glGetUniformLocation(program, "lightPos");
-			glUniform3f(lightPos, 1.0f, 1.5f, 0.5f);
-			const int objectColor = glGetUniformLocation(program, "objectColor");
-			glUniform3f(objectColor, 0.0f, 0.5f, 1.0f);
-			const int lightColor = glGetUniformLocation(program, "lightColor");
-			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
-			
-			model_ = rotate(model_, glm::radians(1.0f), glm::vec3(0.2f, 1.0f, 0.0f));
-			projection_ = glm::perspective(glm::radians(45.f), (float)1280 / (float)720, 0.1f, 100.0f);
-			view_ = translate(view_, glm::vec3(0.0f, 0.0f, 0.0f));
 
+			glUseProgram(program);
+			const int objectColor = glGetUniformLocation(program, "objectColor");
+			const int lightColor = glGetUniformLocation(program, "lightColor");
+			const int lightPos = glGetUniformLocation(program, "lightPos");
+			const int viewPos = glGetUniformLocation(program, "viewPos");
+			glUniform3f(lightPos, 0.0f, 0.0f, 1.0f);
+			glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));
+			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+			glUniform3f(viewPos, 0.0f, 0.0f, 2.0f);
+
+			model_ = rotate(model_, glm::radians(0.2f), glm::vec3(0.3f, 1.0f, 0.5f));
+			projection_ = glm::perspective(glm::radians(45.f), (float)1280 / (float)720, 0.1f, 100.0f);
 			// retrieve the matrix uniform locations
-			
 			const unsigned int modelLoc = glGetUniformLocation(program, "model");
 			const unsigned int viewLoc = glGetUniformLocation(program, "view");
-			
 			// pass them to the shaders (3 different ways)
-		
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model_));
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view_[0][0]);
-			
-			
 			glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, &projection_[0][0]);
 
 			glBindVertexArray(vao_);
 			glActiveTexture(GL_TEXTURE0);
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 		}
-
+		glm::mat4 view_ = glm::mat4(1.0f);
 		GLuint program = 0;
 	private:
 		float vertices_[72] =
@@ -190,82 +187,49 @@ namespace gpr5300
 			20, 22, 23
 		};
 
-		float texCoords[48] =
-		{
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-		};
 
-		float normals_[108] = 
-		{0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f,1.0f,
-		 0.0f,  0.0f,1.0f,
-		 0.0f,  0.0f,1.0f,
-		 0.0f,  0.0f,1.0f,
-		 0.0f,  0.0f,1.0f,
+		float normals_[72] = {
+			//Front
+			 0.0f, 0.0f, -1.0f,
+			 0.0f, 0.0f, -1.0f,
+			 0.0f, 0.0f, -1.0f,
+			 0.0f, 0.0f, -1.0f,
 
-		 0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f, 1.0f,
-		 0.0f,  0.0f, 1.0f,
+			 //Back
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
 
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
+			 //Right
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
 
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 1.0f,  0.0f,  0.0f,
-		 
-		 0.0f, 1.0f,  0.0f,
-		 0.0f, 1.0f,  0.0f,
-		 0.0f, 1.0f,  0.0f,
-		 0.0f, 1.0f,  0.0f,
-		 0.0f, 1.0f,  0.0f,
-		 0.0f, 1.0f,  0.0f,
-		 
-		 0.0f,  1.0f,  0.0f,
-		 0.0f,  1.0f,  0.0f,
-		 0.0f,  1.0f,  0.0f,
-		 0.0f,  1.0f,  0.0f,
-		 0.0f,  1.0f,  0.0f,
-		 0.0f,  1.0f,  0.0f
+			//Left
+			-1.0f, 0.0f, 0.0f,
+		   -1.0f, 0.0f, 0.0f,
+		   -1.0f, 0.0f, 0.0f,
+		   -1.0f, 0.0f, 0.0f,
+
+		   //Top
+		   0.0f, 1.0f, 0.0f,
+		  0.0f, 1.0f, 0.0f,
+		  0.0f, 1.0f, 0.0f,
+		  0.0f, 1.0f, 0.0f,
+
+		  //Bottom
+		  0.0f, -1.0f, 0.0f,
+		 0.0f, -1.0f, 0.0f,
+		 0.0f, -1.0f, 0.0f,
+		 0.0f, -1.0f, 0.0f,
 		};
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
-
+		GLuint vbo_[2] = {};
 		glm::mat4 projection_ = glm::mat4(1.0f);
-		glm::mat4 view_ = glm::mat4(1.0f);
+		
 		glm::mat4 model_ = glm::mat4(1.0f);
 	
 		
@@ -354,10 +318,28 @@ namespace gpr5300
 		void Begin() override;
 		void End() override;
 		void Update(float dt) override;
+
+		void processInput(float dt)
+		{
+			const float cameraSpeed = 1.00f * dt; // adjust accordingly
+			if (GetKeyState('W') & 0x8000)
+				cameraPos += cameraSpeed * cameraFront;
+			if (GetKeyState('S') & 0x8000)
+				cameraPos -= cameraSpeed * cameraFront;
+			if (GetKeyState('A') & 0x8000)
+				cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			if (GetKeyState('D') & 0x8000)
+				cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		}
+
 	private:
 		Pipeline pipeline_;
 		Texture texture_;
 		Mesh mesh_;
+		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
 		
 		float t_ = 0.0f;
 	};
@@ -382,6 +364,8 @@ namespace gpr5300
 	{
 		//Draw program
 		t_ += dt;
+		processInput(dt);
+		mesh_.view_ = glm::lookAt(cameraPos, cameraFront,cameraUp );
 		mesh_.Draw(t_);
 	}
 

@@ -1,6 +1,6 @@
 #include "engine.h"
 
-#include <GL/glew.h>
+#include <gl/glew.h>
 #include <glm/vec2.hpp>
 #include <imgui.h>
 #include <imgui_impl_sdl.h>
