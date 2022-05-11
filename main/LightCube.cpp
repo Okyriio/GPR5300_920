@@ -3,7 +3,7 @@
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <windows.h>
+#include "windows.h"
 #include "gl/glew.h"
 #include "glm/mat4x4.hpp"
 #include "engine.h"
@@ -25,6 +25,7 @@ namespace gpr5300
 		{
 			data_ = stbi_load(file_path.c_str(),
 				&texWidth_, &texHeight_, &nrChannels_, 0);
+			glActiveTexture(GL_TEXTURE0);
 			glGenTextures(1, &texture_);
 			glBindTexture(GL_TEXTURE_2D, texture_);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth_, texHeight_, 0, GL_RGB, GL_UNSIGNED_BYTE, data_);
@@ -42,6 +43,7 @@ namespace gpr5300
 	private:
 		unsigned char* data_{};
 		unsigned int texture_ = 0;
+		unsigned int border_ = 0;
 		int texWidth_ = 0;
 		int texHeight_ = 0;
 		int nrChannels_ = 0;
@@ -70,6 +72,12 @@ namespace gpr5300
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
 
+			glGenBuffers(1, &vbo_[2]);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo_[2]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(texCoords), texCoords, GL_STATIC_DRAW);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(2);
+
 		
 
 			//EBO
@@ -94,14 +102,27 @@ namespace gpr5300
 		{
 
 			glUseProgram(program);
-			const int objectColor = glGetUniformLocation(program, "objectColor");
+			/*const int objectColor = glGetUniformLocation(program, "objectColor");*/
 			const int lightColor = glGetUniformLocation(program, "lightColor");
 			const int lightPos = glGetUniformLocation(program, "lightPos");
 			const int viewPos = glGetUniformLocation(program, "viewPos");
+			const int diffuse = glGetUniformLocation(program, "material.diffuse");
+			const int specular = glGetUniformLocation(program, "material.specular");
+			const int shininess = glGetUniformLocation(program, "material.shininess");
+			const int ambientL = glGetUniformLocation(program, "light.ambientL");
+			const int diffuseL = glGetUniformLocation(program, "light.diffuseL");
+			const int specularL = glGetUniformLocation(program, "light.specularL");
 			glUniform3f(lightPos, 0.0f, 0.0f, 1.0f);
-			glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));
+			/*glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));*/
 			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
 			glUniform3f(viewPos, 0.0f, 0.0f, 2.0f);
+			glUniform1f(diffuse, 1);
+			glUniform3f(specular, 0.5f, 0.5f, 0.5f);
+			glUniform1f(shininess,32);
+			glUniform3f(ambientL, 0.2f, 0.2f, 0.2f);
+			glUniform3f(diffuseL, 0.5f, 0.5f, 0.5f);
+			glUniform3f(specularL, 1.0f, 1.0f, 1.0f);
+
 
 			model_ = rotate(model_, glm::radians(0.2f), glm::vec3(0.3f, 1.0f, 0.5f));
 			projection_ = glm::perspective(glm::radians(45.f), (float)1280 / (float)720, 0.1f, 100.0f);
@@ -115,6 +136,8 @@ namespace gpr5300
 
 			glBindVertexArray(vao_);
 			glActiveTexture(GL_TEXTURE0);
+
+			
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 		}
 		glm::mat4 view_ = glm::mat4(1.0f);
@@ -225,9 +248,37 @@ namespace gpr5300
 		 0.0f, -1.0f, 0.0f,
 		 0.0f, -1.0f, 0.0f,
 		};
+
+		float texCoords[48] =
+		{
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+		};
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
-		GLuint vbo_[2] = {};
+		GLuint vbo_[3] = {};
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		
 		glm::mat4 model_ = glm::mat4(1.0f);
@@ -335,6 +386,7 @@ namespace gpr5300
 	private:
 		Pipeline pipeline_;
 		Texture texture_;
+	
 		Mesh mesh_;
 		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -347,7 +399,7 @@ namespace gpr5300
 	void LightCube::Begin()
 	{
 		glEnable(GL_DEPTH_TEST);
-		texture_.CreateTexture("data/textures/fox.jpg");
+		texture_.CreateTexture("data/textures/ice.jpg");
 		mesh_.Generate();
 		pipeline_.Load(mesh_);
 	}
