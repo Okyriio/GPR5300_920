@@ -9,7 +9,6 @@ in vec2 texCoords;
 
 struct Light {
     vec3 position;
-  
     vec3 ambientL;
     vec3 diffuseL;
     vec3 specularL;
@@ -17,7 +16,7 @@ struct Light {
 
 struct Material {
     sampler2D diffuse;
-    sampler2D     specular;
+    sampler2D      specular;
     float     shininess;
 };  
   

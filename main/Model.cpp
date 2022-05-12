@@ -3,7 +3,7 @@
 #include <sstream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "windows.h"
+#include "Windows.h"
 #include "gl/glew.h"
 #include "glm/mat4x4.hpp"
 #include "engine.h"
@@ -112,7 +112,7 @@ namespace gpr5300
 			const int ambientL = glGetUniformLocation(program, "light.ambientL");
 			const int diffuseL = glGetUniformLocation(program, "light.diffuseL");
 			const int specularL = glGetUniformLocation(program, "light.specularL");
-			glUniform3f(lightPos, 0.0f, 0.0f, 1.0f);
+			glUniform3f(lightPos, 0.0f, 0.0f, 2.0f);
 			/*glUniform3f(objectColor, abs(cos(t)), abs(sin(t)), abs(tan(t)));*/
 			glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
 			glUniform3f(viewPos, 0.0f, 0.0f, 2.0f);
@@ -124,8 +124,8 @@ namespace gpr5300
 			glUniform3f(specularL, 1.0f, 1.0f, 1.0f);
 
 
-			model_ = rotate(model_, glm::radians(0.2f), glm::vec3(0.2f, 1.0f, 0.0f));
-			projection_ = glm::perspective(glm::radians(45.f), (float)1280 / (float)720, 0.1f, 100.0f);
+			model_ = rotate(model_, glm::radians(0.1f), glm::vec3(0.3f, 1.0f, 0.0f));
+			projection_ = glm::perspective(glm::radians(45.f), (float)1920 / (float)1080, 0.1f, 100.0f);
 			// retrieve the matrix uniform locations
 			const unsigned int modelLoc = glGetUniformLocation(program, "model");
 			const unsigned int viewLoc = glGetUniformLocation(program, "view");
@@ -314,7 +314,7 @@ namespace gpr5300
 		void Load(Mesh& mesh)
 		{
 			//Load shaders
-			const auto vertexContent = LoadFile("data/shaders/hello_triangle/LightCube.vert");
+			const auto vertexContent = LoadFile("data/shaders/hello_triangle/Model.vert");
 			const auto* ptr = vertexContent.data();
 			vertexShader_ = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertexShader_, 1, &ptr, nullptr);
@@ -326,7 +326,7 @@ namespace gpr5300
 			{
 				std::cerr << "Error while loading vertex shader\n";
 			}
-			const auto fragmentContent = LoadFile("data/shaders/hello_triangle/LightCube.frag");
+			const auto fragmentContent = LoadFile("data/shaders/hello_triangle/Model.frag");
 			ptr = fragmentContent.data();
 			fragmentShader_ = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader_, 1, &ptr, nullptr);
@@ -363,7 +363,7 @@ namespace gpr5300
 		GLuint fragmentShader_ = 0;
 	};
 
-	class LightCube final : public Scene
+	class Model final : public Scene
 	{
 	public:
 		void Begin() override;
@@ -397,8 +397,9 @@ namespace gpr5300
 		float t_ = 0.0f;
 	};
 
-	void LightCube::Begin()
+	void Model::Begin()
 	{
+
 		glEnable(GL_DEPTH_TEST);
 		texture_.CreateTexture("data/Textures/iceice.jpg", GL_TEXTURE0);
 		specular_.CreateTexture("data/Textures/Ice_SPEC.jpg", GL_TEXTURE1);
@@ -406,7 +407,7 @@ namespace gpr5300
 		pipeline_.Load(mesh_);
 	}
 
-	void LightCube::End()
+	void Model::End()
 	{
 		//Unload program/pipeline
 		mesh_.Delete();
@@ -414,7 +415,7 @@ namespace gpr5300
 		texture_.Delete();
 	}
 
-	void LightCube::Update(float dt)
+	void Model::Update(float dt)
 	{
 		//Draw program
 		t_ += dt;
@@ -428,7 +429,7 @@ namespace gpr5300
 
 int main(int argc, char** argv)
 {
-	gpr5300::LightCube scene;
+	gpr5300::Model scene;
 	gpr5300::Engine engine(&scene);
 	engine.Run();
 	return EXIT_SUCCESS;
