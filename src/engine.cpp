@@ -1,6 +1,6 @@
 #include "engine.h"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <glm/vec2.hpp>
 #include <imgui.h>
 #include <imgui_impl_sdl.h>
@@ -27,6 +27,8 @@ namespace gpr5300
             using seconds = std::chrono::duration<float, std::ratio<1, 1>>;
             const auto dt = std::chrono::duration_cast<seconds>(start - clock);
             clock = start;
+
+            SDL_WarpMouseInWindow(window_, 0, 0); //recenter mouse !! I think
 
             //Manage SDL event
             SDL_Event event;
@@ -63,6 +65,7 @@ namespace gpr5300
                 scene_->OnEvent(event);
                 ImGui_ImplSDL2_ProcessEvent(&event);
             }
+            //Background Color
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -109,6 +112,9 @@ namespace gpr5300
             SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
         );
         glRenderContext_ = SDL_GL_CreateContext(window_);
+
+        SDL_SetRelativeMouseMode(SDL_TRUE); //mouse input
+
         //setting vsync
         SDL_GL_SetSwapInterval(1);
 
@@ -131,7 +137,7 @@ namespace gpr5300
         //ImGui::StyleColorsDark();
         ImGui::StyleColorsClassic();
         ImGui_ImplSDL2_InitForOpenGL(window_, glRenderContext_);
-        ImGui_ImplOpenGL3_Init("#version 300 es");
+        ImGui_ImplOpenGL3_Init("#version 330 core");
 
         scene_->Begin();
     }
