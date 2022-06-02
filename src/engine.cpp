@@ -28,7 +28,7 @@ namespace gpr5300
             const auto dt = std::chrono::duration_cast<seconds>(start - clock);
             clock = start;
 
-            SDL_WarpMouseInWindow(window_, 0, 0); //recenter mouse !! I think
+            //SDL_WarpMouseInWindow(window_, 0, 0); //recenter mouse !! I think
 
             //Manage SDL event
             SDL_Event event;
@@ -66,7 +66,7 @@ namespace gpr5300
                 ImGui_ImplSDL2_ProcessEvent(&event);
             }
             //Background Color
-            glClearColor(0, 0, 0, 0);
+            glClearColor(1, 1, 1, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             scene_->Update(dt.count());
@@ -113,7 +113,7 @@ namespace gpr5300
         );
         glRenderContext_ = SDL_GL_CreateContext(window_);
 
-        SDL_SetRelativeMouseMode(SDL_TRUE); //mouse input
+        //SDL_SetRelativeMouseMode(SDL_TRUE); //mouse input
 
         //setting vsync
         SDL_GL_SetSwapInterval(1);

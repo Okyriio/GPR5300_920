@@ -1,9 +1,7 @@
 #pragma once
-#include "mesh.h"
+#include "ModelObject.h"
 #include "scene.h"
 #include "pipeline.h"
-#include "texture.h"
-
 
 
 namespace gpr5300
@@ -18,8 +16,9 @@ namespace gpr5300
 		void ProcessInput(float dt);
 	private:
 		Pipeline pipeline_;
-		Texture baseTexture_;
-		Texture specularTexture_;
+		/*Texture baseTexture_;
+		Texture specularTexture_;*/
+		ModelObject model_;
 		Mesh mesh_;
 		float tt_ = 0.0f;
 		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);

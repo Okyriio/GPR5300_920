@@ -87,9 +87,7 @@ namespace gpr5300
 
 	void Pipeline::ActivateLight() const
 	{
-		SetVector3("light.position", 0.0f, 0.0f, 2.0f);
-		SetVector3("light.ambientL", 0.3f, 0.3f, 0.3f);
-		SetVector3("light.diffuseL", 1.0f, 1.0f, 1.0f);
-		SetVector3("light.specularL", 1.0f, 1.0f, 1.0f);
+		
+
 	}
 }

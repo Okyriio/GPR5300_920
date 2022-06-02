@@ -1,6 +1,7 @@
 
 #pragma once
 #include "scene.h"
+#include <ModelObject.h>
 
 namespace gpr5300
 {
@@ -15,7 +16,7 @@ namespace gpr5300
         void Begin();
         void End();
         Scene* scene_ = nullptr;
-
+        
 
 
         SDL_GLContext glRenderContext_{};

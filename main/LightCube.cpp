@@ -142,6 +142,7 @@ namespace gpr5300
 		}
 		glm::mat4 view_ = glm::mat4(1.0f);
 		GLuint program = 0;
+		GLuint vbo_[3] = {};
 	private:
 		float vertices_[72] =
 		{
@@ -278,7 +279,7 @@ namespace gpr5300
 		};
 		GLuint vao_ = 0;
 		GLuint ebo_ = 0;
-		GLuint vbo_[3] = {};
+		
 		glm::mat4 projection_ = glm::mat4(1.0f);
 		
 		glm::mat4 model_ = glm::mat4(1.0f);
@@ -286,27 +287,27 @@ namespace gpr5300
 		
 	};
 
-	//class Light
-	//{
-	//public:
-	//	void Generate(Mesh mesh)
-	//	{
-	//		glGenVertexArrays(1, &vao_);
-	//		glBindVertexArray(vao_);
+	class Light
+	{
+	public:
+		void Generate(Mesh mesh)
+		{
+			glGenVertexArrays(1, &vao_);
+			glBindVertexArray(vao_);
 
-	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
-	//		// note that we update the lamp's position attribute's stride to reflect the updated buffer data
-	//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	//		glEnableVertexAttribArray(0);
-	//		glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[1]);
-	//		// normal attribute
-	//		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	//		glEnableVertexAttribArray(1);
-	//	}
+			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[0]);
+			// note that we update the lamp's position attribute's stride to reflect the updated buffer data
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(0);
+			glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo_[1]);
+			// normal attribute
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+			glEnableVertexAttribArray(1);
+		}
 
-	//private:
-	//	GLuint vao_ = 0;
-	//};
+	private:
+		GLuint vao_ = 0;
+	};
 
 	class Pipeline
 	{

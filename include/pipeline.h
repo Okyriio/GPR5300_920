@@ -19,6 +19,7 @@ namespace gpr5300
 
 		void Delete() const;
 	private:
+		
 		GLuint vertexShader_ = 0;
 		GLuint fragmentShader_ = 0;
 	};
