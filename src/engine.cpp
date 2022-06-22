@@ -66,8 +66,8 @@ namespace gpr5300
                 ImGui_ImplSDL2_ProcessEvent(&event);
             }
             //Background Color
-            glClearColor(1, 1, 1, 0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
             scene_->Update(dt.count());
 
@@ -113,7 +113,7 @@ namespace gpr5300
         );
         glRenderContext_ = SDL_GL_CreateContext(window_);
 
-        //SDL_SetRelativeMouseMode(SDL_TRUE); //mouse input
+        SDL_SetRelativeMouseMode(SDL_TRUE); //mouse input
 
         //setting vsync
         SDL_GL_SetSwapInterval(1);

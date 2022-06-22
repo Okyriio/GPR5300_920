@@ -18,7 +18,7 @@
 namespace gpr5300
 {
 
-	class Texture
+	class TextureL
 	{
 	public:
 		void CreateTexture(const std::string& file_path, auto TextureNumber)
@@ -49,7 +49,7 @@ namespace gpr5300
 		int nrChannels_ = 0;
 	};
 
-	class Mesh
+	class MeshL
 	{
 	public:
 	
@@ -290,7 +290,7 @@ namespace gpr5300
 	class Light
 	{
 	public:
-		void Generate(Mesh mesh)
+		void Generate(MeshL mesh)
 		{
 			glGenVertexArrays(1, &vao_);
 			glBindVertexArray(vao_);
@@ -309,10 +309,10 @@ namespace gpr5300
 		GLuint vao_ = 0;
 	};
 
-	class Pipeline
+	class PipelineL
 	{
 	public:
-		void Load(Mesh& mesh)
+		void Load(MeshL& mesh)
 		{
 			//Load shaders
 			const auto vertexContent = LoadFile("data/shaders/hello_triangle/LightCube.vert");
@@ -385,11 +385,11 @@ namespace gpr5300
 		}
 
 	private:
-		Pipeline pipeline_;
-		Texture texture_;
-		Texture specular_;
+		PipelineL pipeline_;
+		TextureL texture_;
+		TextureL specular_;
 	
-		Mesh mesh_;
+		MeshL mesh_;
 		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);

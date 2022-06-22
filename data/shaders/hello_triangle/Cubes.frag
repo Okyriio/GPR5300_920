@@ -1,11 +1,12 @@
-#version 300 es
-precision mediump float;
 
-layout (location = 0) out vec4 fragColor;
-in vec2 TexCoord;
+#version 330 core
+out vec4 FragColor;
 
-uniform sampler2D ourTexture;
+in vec3 TexCoords;
 
-void main() {
-    fragColor = texture(ourTexture, TexCoord);
+uniform samplerCube skybox;
+
+void main()
+{    
+    FragColor = texture(skybox, TexCoords);
 }

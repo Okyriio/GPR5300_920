@@ -1,7 +1,11 @@
 #pragma once
+#include "frameBuffer.h"
 #include "ModelObject.h"
 #include "scene.h"
-#include "pipeline.h"
+#include "shader.h"
+#include <CubeMap.h>
+
+#include "Camera.h"
 
 
 namespace gpr5300
@@ -9,20 +13,26 @@ namespace gpr5300
 	class Model final : public Scene
 	{
 	public:
-
 		void Begin() override;
 		void End() override;
 		void Update(float dt) override;
 		void ProcessInput(float dt);
+		void mouse_callback( double xposIn, double yposIn);
+		
 	private:
-		Pipeline pipeline_;
-		/*Texture baseTexture_;
-		Texture specularTexture_;*/
+		float tt_ = 0;
+		int numOfModels = 0;
+		Shader skyShader_;
+		Shader sceneShader_;
+		Shader simpleColorShader_;
+		Shader screenShader_;
+		std::vector<ModelObject> models_;
 		ModelObject model_;
-		Mesh mesh_;
-		float tt_ = 0.0f;
-		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		FrameBuffer frameBuffer_;
+		CubeMap sky_;
+		Camera cam_ {glm::vec3(0.0f,0.0f,3.0f)};
+		
 	};
+
+
 }

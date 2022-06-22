@@ -1,24 +1,24 @@
 #pragma once
-#include <gl/glew.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <string>
-#include "pipeline.h"
 #include <vector>
-#include <iostream>
 #include <assimp/types.h>
+
+#include "shader.h"
 
 
 namespace gpr5300
 {
 
-	struct Vertex {
+	struct Vertex
+	{
 		glm::vec3 Position;
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
-	
 	};
 
-	struct Texture {
+	struct Texture
+	{
 		unsigned int id;
 		std::string type;
 		std::string path;
@@ -27,22 +27,15 @@ namespace gpr5300
 	class Mesh
 	{
 	public:
-		// mesh data
-		std::vector<Vertex>       vertices;
+		void InitMesh(std::vector<Vertex> vertices, std::vector<unsigned> indices, std::vector<Texture> textures);
+		void Draw(const Shader& shader) const;
+		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
-		std::vector<Texture>      textures;
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection;
+		std::vector<Texture> textures;
 
-		void InitMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
-		void Draw(Pipeline& pipeline);
 	private:
-		
-		//  render data
-		unsigned int VAO{}, VBO{}, EBO{};
+		unsigned int vao_{}, vbo_{}, ebo_{};
 
-		void setupMesh();
-	
+		void SetupMesh();
 	};
 }
