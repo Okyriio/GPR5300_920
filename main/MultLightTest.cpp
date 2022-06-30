@@ -18,7 +18,7 @@
 
 namespace gpr5300
 {
-    class Texture
+    class TextureM
     {
     public:
 
@@ -55,7 +55,7 @@ namespace gpr5300
         }
     };
 
-    class Mesh
+    class MeshM
     {
     public:
         glm::mat4 model = glm::mat4(1.0f);
@@ -233,7 +233,7 @@ namespace gpr5300
         };
     };
 
-    class Pipeline
+    class PipelineM
     {
     public:
         GLuint vertexShader_ = 0;
@@ -321,10 +321,10 @@ namespace gpr5300
                 (v1.x * v2.y) - (v1.y * v2.x) };
         }
 
-        Texture texture1;
-        Texture texture2;
-        Mesh cubeMesh;
-        Pipeline cubePipeline;
+        TextureM texture1;
+        TextureM texture2;
+        MeshM cubeMesh;
+        PipelineM cubePipeline;
 
         int mouseX, mouseY;
         float yaw, pitch;
@@ -351,17 +351,7 @@ namespace gpr5300
 
         void processCameraInput(float dt)
         {
-            //!!There is a line of code in engine
-            SDL_GetRelativeMouseState(&mouseX, &mouseY);
-
-            float xoffset = mouseX * sensitivity;
-            float yoffset = mouseY * sensitivity;
-
-            direction.x += xoffset;
-            direction.y += yoffset;
-
-            cameraFront.x = direction.x;
-            cameraFront.y = -direction.y;
+          
 
             const float cameraSpeed = 1.00f * dt; // adjust accordingly
             constexpr int keyDown = 0x8000;
@@ -462,6 +452,7 @@ namespace gpr5300
 
         //bind specular map
         glActiveTexture(GL_TEXTURE1);
+
         glBindTexture(GL_TEXTURE_2D, texture2.texture);
 
         glBindVertexArray(cubeMesh.vao_);

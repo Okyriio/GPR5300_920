@@ -10,6 +10,7 @@
 #include <unordered_map>
 
 #include "engine.h"
+#include "shader.h"
 
 
 namespace gpr5300
@@ -21,9 +22,14 @@ public:
 	glm::mat4 model = glm::mat4(1.0);
 	void InitModel(const char* path);
 	void Draw(const Shader& pipeline) const;
+	void MultipleDraw(const Shader& pipeline, int amount) const;
+	//void MeshSetup() ;
+	
+	std::vector<Mesh> meshes;
+	Mesh mesh_;
 private:
 
-	std::vector<Mesh> meshes;
+	
 	std::string directory;
 	
 	void loadModel(const std::string& path);

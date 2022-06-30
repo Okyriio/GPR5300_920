@@ -4,6 +4,7 @@
 #include <vector>
 #include <assimp/types.h>
 
+
 #include "shader.h"
 
 
@@ -15,6 +16,8 @@ namespace gpr5300
 		glm::vec3 Position;
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
+		glm::vec3 tangent;
+		
 	};
 
 	struct Texture
@@ -29,13 +32,16 @@ namespace gpr5300
 	public:
 		void InitMesh(std::vector<Vertex> vertices, std::vector<unsigned> indices, std::vector<Texture> textures);
 		void Draw(const Shader& shader) const;
+		
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
-
-	private:
+		
 		unsigned int vao_{}, vbo_{}, ebo_{};
 
+	private:
+		
+	
 		void SetupMesh();
 	};
 }

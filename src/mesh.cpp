@@ -1,5 +1,6 @@
 #include "mesh.h"
 
+
 #include <glm/gtc/type_ptr.hpp>
 #include <utility>
 
@@ -20,6 +21,7 @@ namespace gpr5300
 	{
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
+		unsigned int normalNr = 1;
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
@@ -30,10 +32,14 @@ namespace gpr5300
 				number = std::to_string(diffuseNr++);
 			else if (name == "texture_specular")
 				number = std::to_string(specularNr++);
+			else if (name == "texture_normal")
+				number = std::to_string(normalNr++);
 
 			shader.SetInt(("material." + name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
+
+	
 		// draw mesh
 		glBindVertexArray(vao_);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -41,6 +47,7 @@ namespace gpr5300
 		glActiveTexture(GL_TEXTURE0);
 	}
 
+	
 	void Mesh::SetupMesh()
 	{
 		glGenVertexArrays(1, &vao_);
@@ -63,6 +70,11 @@ namespace gpr5300
 		// vertex texture coords
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+		// vertex tangent
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+
+	
 		glBindVertexArray(0);
 	}
 }

@@ -20,6 +20,8 @@ namespace gpr5300
 		void mouse_callback( double xposIn, double yposIn);
 		
 	private:
+		glm::mat4* modelMatrices;
+		unsigned int amount = 100;
 		float tt_ = 0;
 		int numOfModels = 0;
 		Shader skyShader_;

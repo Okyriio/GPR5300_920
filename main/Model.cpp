@@ -28,39 +28,64 @@ namespace gpr5300
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CCW);
 		
-		/*baseTexture_.CreateTexture("data/Textures/iceice.jpg", GL_TEXTURE0);
-		specularTexture_.CreateTexture("data/Textures/Ice_SPEC.jpg", GL_TEXTURE1);*/
-		
+	
 
-		/*for (int fill = 0; fill < numOfModels ; fill++)
-		{
-			ModelObject model;
-			models_.emplace_back(model);
-		}
-
-		for (int i = 0; i < models_.size(); i++)
-		{
-			
-		}*/
-		
-		
-		
-		frameBuffer_.InitFB();
+		//frameBuffer_.InitFB();
 		sky_.cubemapTexture = sky_.loadCubemap(sky_.cubeMapfaces);
 		sky_.BindSky();
 		skyShader_.Load("data/shaders/hello_triangle/CubeMap.vert", "data/shaders/hello_triangle/CubeMap.frag");
-		sceneShader_.Load("data/shaders/hello_triangle/Model.vert" , "data/shaders/hello_triangle/Model.frag");
+		sceneShader_.Load("data/shaders/hello_triangle/Model.vert", "data/shaders/hello_triangle/Model.frag");
 		screenShader_.Load("data/shaders/hello_triangle/FrameBuffer.vert", "data/shaders/hello_triangle/FrameBuffer.frag");
 		//simpleColorShader_.Load("data/shaders/hello_triangle/shader_single_color.vert", "data/shaders/hello_triangle/shader_single_color.frag");
 		model_.InitModel("data/Models/backpack/backpack.obj");
+	
+		sceneShader_.Use();
+		modelMatrices = new glm::mat4[amount];
+		for (unsigned int i = 0; i < amount; i++)
+		{
+			constexpr float offset = 3.0f;
+			glm::mat4 model = glm::mat4(1.0f);
+			model = translate(model, glm::vec3(offset * i, 0.0, 0.0));
+			modelMatrices[i] = model;
+		}
+
+		unsigned int buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+
+		for (unsigned int i = 0; i < model_.meshes.size(); i++)
+		{
+			unsigned int VAO = model_.meshes[i].vao_;
+			glBindVertexArray(VAO);
+			// vertex attributes
+			std::size_t vec4Size = sizeof(glm::vec4);
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+			glEnableVertexAttribArray(5);
+			glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+			glEnableVertexAttribArray(6);
+			glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+			glEnableVertexAttribArray(7);
+			glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
+
+			glVertexAttribDivisor(4, 1);
+			glVertexAttribDivisor(5, 1);
+			glVertexAttribDivisor(6, 1);
+			glVertexAttribDivisor(7, 1);
+
+			glBindVertexArray(0);
+		}
+
+		
 	}
 
 	void Model::End()
 	{
-		//Unload program/pipeline
+		/*Unload program/pipeline*/
 		
-		/*shader_.Delete();*/
-	/*	baseTexture_.Delete();
+		/*shader_.Delete();
+		baseTexture_.Delete();
 		specularTexture_.Delete();*/
 	}
 
@@ -85,9 +110,6 @@ namespace gpr5300
 		glm::mat4 projection = glm::perspective(glm::radians(cam_.Zoom), 1280.0f/ 720.0f, 0.1f, 100.0f);
 
 
-		
-
-
 		//Set uniforms
 		sceneShader_.Use();
 		sceneShader_.SetInt("skybox", 0);
@@ -96,18 +118,17 @@ namespace gpr5300
 		sceneShader_.SetVector3("dirLight.ambient", 0.3f, 0.3f, 0.3f);
 		sceneShader_.SetVector3("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
 		sceneShader_.SetVector3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-		sceneShader_.SetInt("material.ambient", 0);
-		sceneShader_.SetInt("material.specular", 1);
+		sceneShader_.SetInt("material.texture_diffuse1", 0);
+			sceneShader_.SetInt("material.texture_specular1", 1);
 		sceneShader_.SetFloat("material.shininess", 64.0f);
 		sceneShader_.SetMatrix4("view", view);
 		sceneShader_.SetMatrix4("projection", projection);
 
 
-		 //model_.model = rotate(model_.model, dt * glm::radians(20.0f), glm::vec3(0.2f, 1.0f, 3.0f));
+		 
 		 model = scale(model_.model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		
-		sceneShader_.SetMatrix4("model", model);
-
+		
 
 
 		////Stencil
@@ -115,7 +136,7 @@ namespace gpr5300
 		glStencilMask(0xFF);*/
 
 		
-		model_.Draw(sceneShader_);
+		model_.MultipleDraw(sceneShader_, amount);
 
 		// draw skybox as last
 		glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
@@ -188,7 +209,7 @@ namespace gpr5300
 		switch (event.type)
 		{
 		case SDL_MOUSEMOTION:
-			mouse_callback(cam_.mousePosx, cam_.mousPosy);
+			/*mouse_callback(cam_.mousePosx, cam_.mousPosy);*/
 			cam_.ProcessMouseMovement(event.motion.xrel, -event.motion.yrel);
 			break;
 		default:
@@ -208,7 +229,6 @@ namespace gpr5300
 			cam_.ProcessKeyboard(RIGHT, dt);
 		}
 	}
-	
 }
 
 int main(int argc, char** argv)

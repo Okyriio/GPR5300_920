@@ -20,15 +20,49 @@ namespace gpr5300
         }
     }
 
+    void ModelObject::MultipleDraw(const Shader& pipeline, int amount) const
+    {
+        unsigned int diffuseNr = 1;
+        unsigned int specularNr = 1;
+        unsigned int normalNr = 1;
+        for (unsigned int i = 0; i < textures_loaded.size(); i++)
+        {
+            glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+            // retrieve texture number (the N in diffuse_textureN)
+            std::string number;
+            std::string name = textures_loaded[i].type;
+            if (name == "texture_diffuse")
+                number = std::to_string(diffuseNr++);
+            else if (name == "texture_specular")
+                number = std::to_string(specularNr++);
+            else if (name == "texture_normal")
+                number = std::to_string(normalNr++);
+
+            pipeline.SetInt(("material." + name + number).c_str(), i);
+            glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
+        }
+
+        for (unsigned int i = 0; i < meshes.size(); i++)
+        {
+            glBindVertexArray(meshes[i].vao_);
+            glDrawElementsInstanced(
+                GL_TRIANGLES, meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount
+            );
+        }
+    }
+
+   
+
 
     void ModelObject::loadModel(const std::string& path)
     {
         Assimp::Importer import;
-        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+
             return;
         }
         directory = path.substr(0, path.find_last_of('/'));
@@ -85,6 +119,13 @@ namespace gpr5300
                 vec.x = mesh->mTextureCoords[0][i].x;
                 vec.y = mesh->mTextureCoords[0][i].y;
                 vertex.TexCoords = vec;
+            }
+            if(mesh->HasTangentsAndBitangents())
+            {
+                vector.x = mesh->mTangents[i].x;
+                vector.y = mesh->mTangents[i].y;
+                vector.z = mesh->mTangents[i].z;
+                vertex.tangent = vector;
             }
             else
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);
