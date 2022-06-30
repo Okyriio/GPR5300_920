@@ -98,6 +98,7 @@ namespace gpr5300
 		//Draw program
 		tt_ += dt;
 		ProcessInput(dt);
+		
 				////FirstPass FrameBuffer
 		//frameBuffer_.bindFrameBuffer();
 
@@ -178,24 +179,9 @@ namespace gpr5300
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 
-	void Model::mouse_callback( double xposIn, double yposIn)
+	void Model::OnEvent(const SDL_Event& event)
 	{
-		float xpos = static_cast<float>(xposIn);
-		float ypos = static_cast<float>(yposIn);
-		if (cam_.firstMouse)
-		{
-			cam_.lastX = xpos;
-			cam_.lastY = ypos;
-			cam_.firstMouse = false;
-		}
-
-		float xoffset = xpos - cam_.lastX;
-		float yoffset = cam_.lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-		cam_.lastX = xpos;
-		cam_.lastY = ypos;
-
-		
+		cam_.onEvent(event);
 	}
 
 	void Model::ProcessInput(float dt)
@@ -205,16 +191,6 @@ namespace gpr5300
 		SDL_PollEvent(&event);
 		const Uint8* state = SDL_GetKeyboardState(nullptr);
 		
-		SDL_GetMouseState(&cam_.mousePosx, &cam_.mousPosy);
-		switch (event.type)
-		{
-		case SDL_MOUSEMOTION:
-			/*mouse_callback(cam_.mousePosx, cam_.mousPosy);*/
-			cam_.ProcessMouseMovement(event.motion.xrel, -event.motion.yrel);
-			break;
-		default:
-			break;
-		}
 
 		if (state[SDL_SCANCODE_W]) {
 			cam_.ProcessKeyboard(FORWARD, dt);

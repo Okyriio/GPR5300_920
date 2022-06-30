@@ -18,6 +18,7 @@ namespace gpr5300
 		void Update(float dt) override;
 		void ProcessInput(float dt);
 		void mouse_callback( double xposIn, double yposIn);
+		void OnEvent(const SDL_Event& event) override;
 		
 	private:
 		glm::mat4* modelMatrices;

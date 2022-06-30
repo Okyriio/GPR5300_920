@@ -109,6 +109,20 @@ public:
         updateCameraVectors();
     }
 
+    void onEvent (const SDL_Event &event)
+    {
+        SDL_GetMouseState(&mousePosx, &mousPosy);
+        switch (event.type)
+        {
+        case SDL_MOUSEMOTION:
+            /*mouse_callback(cam_.mousePosx, cam_.mousPosy);*/
+            ProcessMouseMovement(event.motion.xrel, -event.motion.yrel);
+            break;
+        default:
+            break;
+        }
+    }
+
     // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
     void ProcessMouseScroll(float yoffset)
     {
