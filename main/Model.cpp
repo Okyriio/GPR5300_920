@@ -116,12 +116,40 @@ namespace gpr5300
 		sceneShader_.SetInt("skybox", 0);
 		sceneShader_.SetVector3("viewPos", cam_.Position);
 		sceneShader_.SetVector3("dirLight.direction", cam_.Front);
-		sceneShader_.SetVector3("dirLight.ambient", 0.3f, 0.3f, 0.3f);
-		sceneShader_.SetVector3("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
-		sceneShader_.SetVector3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-		sceneShader_.SetInt("material.texture_diffuse1", 0);
-			sceneShader_.SetInt("material.texture_specular1", 1);
-		sceneShader_.SetFloat("material.shininess", 64.0f);
+		sceneShader_.SetVector3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		sceneShader_.SetVector3("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
+		sceneShader_.SetVector3("dirLight.specular", 1.0f, 1.0f, 1.0f);
+		
+		
+
+		//point light 1
+		sceneShader_.SetVector3("pointLights[0].position", 0.0f, 0.0f, 1.0f);
+		sceneShader_.SetVector3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		sceneShader_.SetVector3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f); //darken diffuse light a bit
+			sceneShader_.SetVector3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetFloat("pointLights[0].constant", 1.0f);
+		sceneShader_.SetFloat("pointLights[0].linear", 0.09f);
+		sceneShader_.SetFloat("pointLights[0].quadratic", 0.032f);
+	
+
+		// spotLight camera
+		sceneShader_.SetVector3("spotLight.position", cam_.Position);
+		sceneShader_.SetVector3("spotLight.direction", cam_.Front);
+		sceneShader_.SetVector3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		sceneShader_.SetVector3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetVector3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetFloat("spotLight.constant", 1.0f);
+		sceneShader_.SetFloat("spotLight.linear", 0.09f);
+		sceneShader_.SetFloat("spotLight.quadratic", 0.032f);
+		sceneShader_.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		sceneShader_.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+
+		//sceneShader_.SetInt("material.texture_diffuse1", 0);
+		//sceneShader_.SetInt("material.texture_specular1", 1);
+		//sceneShader_.SetInt("material.texture_normal1", 1);
+		sceneShader_.SetFloat("material.shininess", 32.0f);
+
 		sceneShader_.SetMatrix4("view", view);
 		sceneShader_.SetMatrix4("projection", projection);
 
