@@ -28,7 +28,6 @@ namespace gpr5300
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CCW);
 		
-	
 
 		//frameBuffer_.InitFB();
 		sky_.cubemapTexture = sky_.loadCubemap(sky_.cubeMapfaces);
@@ -37,7 +36,10 @@ namespace gpr5300
 		sceneShader_.Load("data/shaders/hello_triangle/Model.vert", "data/shaders/hello_triangle/Model.frag");
 		screenShader_.Load("data/shaders/hello_triangle/FrameBuffer.vert", "data/shaders/hello_triangle/FrameBuffer.frag");
 		//simpleColorShader_.Load("data/shaders/hello_triangle/shader_single_color.vert", "data/shaders/hello_triangle/shader_single_color.frag");
-		model_.InitModel("data/Models/backpack/backpack.obj");
+		//model_.InitModel("data/Models/backpack/backpack.obj", true);
+		
+		//model_.InitModel("data/Models/try/dog.obj", false);
+		model_.InitModel("data/Models/nanosuit/nanosuit.obj", false);
 	
 		sceneShader_.Use();
 		modelMatrices = new glm::mat4[amount];
@@ -45,7 +47,8 @@ namespace gpr5300
 		{
 			constexpr float offset = 3.0f;
 			glm::mat4 model = glm::mat4(1.0f);
-			model = translate(model, glm::vec3(offset * i, 0.0, 0.0));
+			model = translate(model, glm::vec3(offset * i *2, 0.0, 0.0));
+			model = scale(model, glm::vec3(0.2, 0.2, 0.2));
 			modelMatrices[i] = model;
 		}
 
@@ -56,6 +59,7 @@ namespace gpr5300
 
 		for (unsigned int i = 0; i < model_.meshes.size(); i++)
 		{
+
 			unsigned int VAO = model_.meshes[i].vao_;
 			glBindVertexArray(VAO);
 			// vertex attributes
@@ -99,7 +103,7 @@ namespace gpr5300
 		tt_ += dt;
 		ProcessInput(dt);
 		
-				////FirstPass FrameBuffer
+		//		//FirstPass FrameBuffer
 		//frameBuffer_.bindFrameBuffer();
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -117,8 +121,8 @@ namespace gpr5300
 		sceneShader_.SetVector3("viewPos", cam_.Position);
 		sceneShader_.SetVector3("dirLight.direction", cam_.Front);
 		sceneShader_.SetVector3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		sceneShader_.SetVector3("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
-		sceneShader_.SetVector3("dirLight.specular", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetVector3("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetVector3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		
 		
 
@@ -126,46 +130,49 @@ namespace gpr5300
 		sceneShader_.SetVector3("pointLights[0].position", 0.0f, 0.0f, 1.0f);
 		sceneShader_.SetVector3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
 		sceneShader_.SetVector3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f); //darken diffuse light a bit
-			sceneShader_.SetVector3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+			sceneShader_.SetVector3("pointLights[0].specular", 0.5f, 0.5f, 0.5f);
 		sceneShader_.SetFloat("pointLights[0].constant", 1.0f);
 		sceneShader_.SetFloat("pointLights[0].linear", 0.09f);
 		sceneShader_.SetFloat("pointLights[0].quadratic", 0.032f);
 	
 
-		// spotLight camera
-		sceneShader_.SetVector3("spotLight.position", cam_.Position);
-		sceneShader_.SetVector3("spotLight.direction", cam_.Front);
-		sceneShader_.SetVector3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		sceneShader_.SetVector3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		sceneShader_.SetVector3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		sceneShader_.SetFloat("spotLight.constant", 1.0f);
-		sceneShader_.SetFloat("spotLight.linear", 0.09f);
-		sceneShader_.SetFloat("spotLight.quadratic", 0.032f);
-		sceneShader_.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		sceneShader_.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		//// spotLight camera
+		//sceneShader_.SetVector3("spotLight.position", cam_.Position);
+		//sceneShader_.SetVector3("spotLight.direction", cam_.Front);
+		//sceneShader_.SetVector3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		//sceneShader_.SetVector3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		//sceneShader_.SetVector3("spotLight.specular", 0.2f, 0.2f, 0.2f);
+		//sceneShader_.SetFloat("spotLight.constant", 1.0f);
+		//sceneShader_.SetFloat("spotLight.linear", 0.09f);
+		//sceneShader_.SetFloat("spotLight.quadratic", 0.032f);
+		//sceneShader_.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		//sceneShader_.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 
 		//sceneShader_.SetInt("material.texture_diffuse1", 0);
 		//sceneShader_.SetInt("material.texture_specular1", 1);
-		//sceneShader_.SetInt("material.texture_normal1", 1);
-		sceneShader_.SetFloat("material.shininess", 32.0f);
+		sceneShader_.SetInt("material.texture_normal1", 1);
+		sceneShader_.SetFloat("material.shininess", 64.0f);
 
 		sceneShader_.SetMatrix4("view", view);
 		sceneShader_.SetMatrix4("projection", projection);
 
 
 		 
-		 model = scale(model_.model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		
+		
+		
+			model = scale(model_.model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+			model_.MultipleDraw(sceneShader_, amount);
 		
 
 
 		////Stencil
-		/*glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);*/
+		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		//glStencilMask(0xFF);
 
 		
-		model_.MultipleDraw(sceneShader_, amount);
+		
 
 		// draw skybox as last
 		glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
@@ -186,8 +193,8 @@ namespace gpr5300
 		//glStencilMask(0x00);
 		//glDisable(GL_DEPTH_TEST);
 		//simpleColorShader_.Use();
-		//simpleColorShader_.SetMatrix4("view", model_.view);
-		//simpleColorShader_.SetMatrix4("projection", model_.projection);
+		//simpleColorShader_.SetMatrix4("view", view);
+		//simpleColorShader_.SetMatrix4("projection", projection);
 		//model = scale(model, glm::vec3(1.04f, 1.04f, 1.04f));	// it's a bit too big for our scene, so scale it down
 		//simpleColorShader_.SetMatrix4("model", model);
 		//model_.Draw(simpleColorShader_);

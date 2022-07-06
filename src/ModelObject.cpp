@@ -6,9 +6,9 @@ namespace gpr5300
 {
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
 
-    void ModelObject::InitModel(const char* path)
+    void ModelObject::InitModel(const char* path, bool flip)
     {
-        stbi_set_flip_vertically_on_load(true);
+        stbi_set_flip_vertically_on_load(flip);
         loadModel(path);
     }
 
@@ -22,37 +22,20 @@ namespace gpr5300
 
     void ModelObject::MultipleDraw(const Shader& pipeline, int amount) const
     {
-        unsigned int diffuseNr = 1;
-        unsigned int specularNr = 1;
-        unsigned int normalNr = 1;
-        for (unsigned int i = 0; i < textures_loaded.size(); i++)
+        
+        for (const auto& meshe : meshes)
         {
-            glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-            // retrieve texture number (the N in diffuse_textureN)
-            std::string number;
-            std::string name = textures_loaded[i].type;
-            if (name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
-            else if (name == "texture_specular")
-                number = std::to_string(specularNr++);
-            else if (name == "texture_normal")
-                number = std::to_string(normalNr++);
+            meshe.BindTexture(pipeline);
 
-            pipeline.SetInt(("material." + name + number).c_str(), i);
-            glBindTexture(GL_TEXTURE_2D, textures_loaded[i].id);
-        }
+            glBindVertexArray(meshe.vao_);
+            glBindBuffer(GL_ARRAY_BUFFER, meshe.vbo_);
+            glDrawElementsInstanced(GL_TRIANGLES, meshe.indices.size(), GL_UNSIGNED_INT, nullptr, amount);
 
-        for (unsigned int i = 0; i < meshes.size(); i++)
-        {
-            glBindVertexArray(meshes[i].vao_);
-            glDrawElementsInstanced(
-                GL_TRIANGLES, meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount
-            );
         }
+        
     }
 
    
-
 
     void ModelObject::loadModel(const std::string& path)
     {

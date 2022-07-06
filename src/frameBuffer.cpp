@@ -39,7 +39,7 @@ namespace gpr5300
         glEnable(GL_DEPTH_TEST);
     }
 
-    void FrameBuffer::bindDefaultBuffer() // TODO not in frambuffer class
+    void FrameBuffer::bindDefaultBuffer() 
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -18,9 +18,6 @@ namespace gpr5300
 		
 		unsigned int loadCubemap(std::vector<std::string> faces);
 		void BindSky();
-
-
-
       
         unsigned int cubemapTexture;
         unsigned int textureID, skyvao{}, skyvbo{};

@@ -20,7 +20,7 @@ class ModelObject
 public:
 	std::vector<Texture> textures_loaded;
 	glm::mat4 model = glm::mat4(1.0);
-	void InitModel(const char* path);
+	void InitModel(const char* path, bool flip);
 	void Draw(const Shader& pipeline) const;
 	void MultipleDraw(const Shader& pipeline, int amount) const;
 	//void MeshSetup() ;
