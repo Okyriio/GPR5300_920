@@ -36,9 +36,8 @@ namespace gpr5300
 		sceneShader_.Load("data/shaders/hello_triangle/Model.vert", "data/shaders/hello_triangle/Model.frag");
 		screenShader_.Load("data/shaders/hello_triangle/FrameBuffer.vert", "data/shaders/hello_triangle/FrameBuffer.frag");
 		//simpleColorShader_.Load("data/shaders/hello_triangle/shader_single_color.vert", "data/shaders/hello_triangle/shader_single_color.frag");
-		//model_.InitModel("data/Models/backpack/backpack.obj", true);
-		
 		//model_.InitModel("data/Models/try/dog.obj", false);
+		model_.InitModel("data/Models/backpack/backpack.obj", true);
 		model_.InitModel("data/Models/nanosuit/nanosuit.obj", false);
 	
 		sceneShader_.Use();
@@ -47,8 +46,9 @@ namespace gpr5300
 		{
 			constexpr float offset = 3.0f;
 			glm::mat4 model = glm::mat4(1.0f);
-			model = translate(model, glm::vec3(offset * i *2, 0.0, 0.0));
-			model = scale(model, glm::vec3(0.2, 0.2, 0.2));
+			model = translate(model, glm::vec3(offset * i * 2, 0.0f, 0.0));
+			model = scale(model, glm::vec3(0.3, 0.3, 0.3));
+			
 			modelMatrices[i] = model;
 		}
 
@@ -121,32 +121,32 @@ namespace gpr5300
 		sceneShader_.SetVector3("viewPos", cam_.Position);
 		sceneShader_.SetVector3("dirLight.direction", cam_.Front);
 		sceneShader_.SetVector3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		sceneShader_.SetVector3("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
+		sceneShader_.SetVector3("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
 		sceneShader_.SetVector3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		
 		
 
 		//point light 1
-		sceneShader_.SetVector3("pointLights[0].position", 0.0f, 0.0f, 1.0f);
+		sceneShader_.SetVector3("pointLights[0].position", 0.0f, 2.0f, 1.0f);
 		sceneShader_.SetVector3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		sceneShader_.SetVector3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f); //darken diffuse light a bit
+		sceneShader_.SetVector3("pointLights[0].diffuse", 0.5f, 0.5f, 0.5f); //darken diffuse light a bit
 			sceneShader_.SetVector3("pointLights[0].specular", 0.5f, 0.5f, 0.5f);
 		sceneShader_.SetFloat("pointLights[0].constant", 1.0f);
 		sceneShader_.SetFloat("pointLights[0].linear", 0.09f);
 		sceneShader_.SetFloat("pointLights[0].quadratic", 0.032f);
 	
 
-		//// spotLight camera
-		//sceneShader_.SetVector3("spotLight.position", cam_.Position);
-		//sceneShader_.SetVector3("spotLight.direction", cam_.Front);
-		//sceneShader_.SetVector3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		//sceneShader_.SetVector3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		//sceneShader_.SetVector3("spotLight.specular", 0.2f, 0.2f, 0.2f);
-		//sceneShader_.SetFloat("spotLight.constant", 1.0f);
-		//sceneShader_.SetFloat("spotLight.linear", 0.09f);
-		//sceneShader_.SetFloat("spotLight.quadratic", 0.032f);
-		//sceneShader_.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		//sceneShader_.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		// spotLight camera
+		sceneShader_.SetVector3("spotLight.position", cam_.Position);
+		sceneShader_.SetVector3("spotLight.direction", cam_.Front);
+		sceneShader_.SetVector3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		sceneShader_.SetVector3("spotLight.diffuse", 0.5f, 0.5f, 0.5f);
+		sceneShader_.SetVector3("spotLight.specular", 0.2f, 0.2f, 0.2f);
+		sceneShader_.SetFloat("spotLight.constant", 1.0f);
+		sceneShader_.SetFloat("spotLight.linear", 0.09f);
+		sceneShader_.SetFloat("spotLight.quadratic", 0.032f);
+		sceneShader_.SetFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		sceneShader_.SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 
 		//sceneShader_.SetInt("material.texture_diffuse1", 0);
@@ -158,12 +158,7 @@ namespace gpr5300
 		sceneShader_.SetMatrix4("projection", projection);
 
 
-		 
-		
-		
-		
-			model = scale(model_.model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-			model_.MultipleDraw(sceneShader_, amount);
+		model_.MultipleDraw(sceneShader_, amount);
 		
 
 

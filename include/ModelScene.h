@@ -22,7 +22,7 @@ namespace gpr5300
 		
 	private:
 		glm::mat4* modelMatrices;
-		unsigned int amount = 100;
+		unsigned int amount = 1;
 		float tt_ = 0;
 		int numOfModels = 0;
 		Shader skyShader_;

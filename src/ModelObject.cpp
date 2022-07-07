@@ -36,7 +36,6 @@ namespace gpr5300
     }
 
    
-
     void ModelObject::loadModel(const std::string& path)
     {
         Assimp::Importer import;
