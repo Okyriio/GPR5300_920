@@ -8,6 +8,8 @@ layout (location = 4) in mat4 aInstanceModel;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
+
 
 out vec3 FragPos;
 out vec2 TexCoords;
@@ -15,6 +17,7 @@ out vec3 TangentLightPos;
 out vec3 TangentViewPos  ;
 out vec3 TangentFragPos  ;
 out mat3 TBN;
+out vec4 FragPosLightSpace;
 
 void main()
 {
@@ -22,7 +25,7 @@ void main()
     FragPos = vec3(aInstanceModel * vec4(aPos, 1.0));
     mat3 Normal = transpose(inverse(mat3(aInstanceModel)));
     TexCoords = aTexCoords;
-  
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     vec3 T = normalize(Normal * aTangent);
     vec3 N = normalize(Normal * aNormal);
     // re-orthogonalize T with respect to N

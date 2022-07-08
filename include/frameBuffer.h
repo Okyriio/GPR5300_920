@@ -14,7 +14,6 @@ namespace gpr5300
 	{
 	public:
 		void InitFB();
-		void Draw(const Shader& pipeline) const;
 		void bindFrameBuffer();
 
 		void bindDefaultBuffer();
@@ -22,8 +21,9 @@ namespace gpr5300
 		void createScreenVAO();
 		unsigned int texture_;
 		
-		unsigned int textureColorbuffer_;
+		unsigned int textureColorbuffer_ = 0;
 		unsigned int vao_{}, vbo_{}, fbo_{}, rbo_{};
+		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	private:
 		
 		
