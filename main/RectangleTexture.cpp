@@ -17,6 +17,8 @@ namespace gpr5300
 	class RectangleTexture final : public Scene
 	{
 	public:
+		
+
 		void Begin() override;
 		void End() override;
 		void Update(float dt) override;
@@ -55,7 +57,7 @@ namespace gpr5300
 		int texWidth_ = 0;
 		int texHeight_ = 0;
 		int nrChannels_ = 0;
-		unsigned char* data;
+		unsigned char* data{};
 	};
 
 	void RectangleTexture::Begin()

@@ -30,10 +30,6 @@ namespace gpr5300
         
 	}
 
-    void ShadowBuffer::bindShadowBuffer() const
-    {
-    }
-
     void ShadowBuffer::bindDefaultBuffer() 
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default

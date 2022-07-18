@@ -39,10 +39,12 @@ namespace gpr5300
 		//simpleColorShader_.Load("data/shaders/hello_triangle/shader_single_color.vert", "data/shaders/hello_triangle/shader_single_color.frag");
 
 		//model_.InitModel("data/Models/try/dog.obj", false);
+	
 		
-		
+
 		model_.InitModel("data/Models/backpack/backpack.obj", true);
 		model_.InitModel("data/Models/nanosuit/nanosuit.obj", false);
+		
 
 		sceneShader_.Use();
 		modelMatrices = new glm::mat4[amount];
@@ -51,11 +53,14 @@ namespace gpr5300
 			constexpr float offset = 3.0f;
 			auto model = glm::mat4(1.0f);
 
-			model = translate(model, glm::vec3(offset * i, -1.0, 0.0));
-			model = scale(model, glm::vec3(0.6, 0.6, 0.6));
+			model = translate(model, glm::vec3(offset * i * 2, 0.0, 0.0));
+
+			model = scale(model, glm::vec3(1, 1, 1));
 
 			modelMatrices[i] = model;
 		}
+
+
 
 		unsigned int buffer;
 		glGenBuffers(1, &buffer);
@@ -116,7 +121,7 @@ namespace gpr5300
 		glm::mat4 lightProjection;
 		glm::mat4 lightView;
 		glm::mat4 lightSpaceMatrix;
-		float near_plane = 1.0f, far_plane = 10.0f;
+		float near_plane = 1.0f, far_plane = 100.0f;
 		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 		lightView = lookAt(glm::vec3(-2.0f, 4.0f, 1.0f),
 		                   glm::vec3(0.0f, 0.0f, 0.0f),

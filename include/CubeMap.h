@@ -29,12 +29,13 @@ namespace gpr5300
 		
 		std::vector<std::string> cubeMapfaces
 		{
-			"data/Textures/sky/right.jpg",
-				"data/Textures/sky/left.jpg",
-				"data/Textures/sky/top.jpg",
-				"data/Textures/sky/bottom.jpg",
-				"data/Textures/sky/front.jpg",
-				"data/Textures/sky/back.jpg"
+                
+                "data/Textures/sky3/front.jpg",
+				"data/Textures/sky3/back.jpg",
+				"data/Textures/sky3/top.jpg",
+				"data/Textures/sky3/bottom.jpg",
+				"data/Textures/sky3/right.jpg",
+                "data/Textures/sky3/left.jpg"
 		};
 
 

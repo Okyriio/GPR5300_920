@@ -16,7 +16,6 @@ struct DirLight {
     vec3 normal;
 };
 
-
 struct PointLight {
     vec3 position;
     

@@ -11,6 +11,7 @@
 
 namespace gpr5300
 {
+
     Engine::Engine(Scene* scene) : scene_(scene)
     {
     }
